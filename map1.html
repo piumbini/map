@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Marker Clustering</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+var locations = [
+            ['Unidade Vila Osasco', -23.544559, -46.781034, 'Avenida Santo Antônio, 2761, Vila Osasco, São Paulo - SP, 06083-215'],
+['Unidade Rebouças', -22.8904057, -43.5603237, 'Avenida Rebouças, 3657, Centro, Sumaré - SP, 13170-023'],
+['Unidade Nutrition Bauru', -22.3370765, -49.0891827, 'Avenida Castelo Branco, 7-15, Vila Independência, Bauru - SP, 17052-000'],
+['Unidade Pitangueiras', -23.2022764, -46.8836439, 'Rua Pitangueiras, 790, Jardim Pitangueiras, Jundiaí - SP, 13206-716'],
+['Unidade Nutrition Vale do Sol', -20.4229151, -49.9592271, 'Avenida pansani, 3092, Vale do sol, Votuporanga - SP, 15500-302'],
+['Unidade Cidade Nova Montes Claros-Mg', -16.739527, -43.8653989, 'Avenida Dona Gregória, 101, Cidade Nova, Montes Claros - MG, 39400-464'],
+['Unidade Centro Salto', -23.199741, -47.3008818, 'Avenida Dom Pedro II, 1421, Centro, Salto - SP, 13320-241'],
+['Unidade ASSIS', -22.6575047, -50.397561, 'Rua Antônio da Silva Cunha Bueno, 425, Jardim Paulista, Assis - SP, 19815-080'],
+['Unidade Paulinia', -22.743178, -47.1744984, 'Avenida João Aranha, 946, Alto de Pinheiros, Paulínia - SP, 13145-256'],
+['Unidade SBC Centro', -23.7132318, -46.5532384, 'Rua Joaquim Nabuco, 56, Centro, São Bernardo do Campo - SP, 09720-375'],
+['Unidade - Chácara', -23.6290144, -46.7025941, 'Rua da paz, 1498, Chácara Santo Antônio, São Paulo - SP, 04713-000'],
+['Unidade Buriti', -23.2230818, -46.8760877, 'Rua Dom Pedro I, 462, Jardim Buriti, Várzea Paulista - SP, 13225-790'],
+['Unidade BOA VISTA', -14.8793362, -40.832031, 'Avenida Gilenilda Alves, 1345, Boa Vista, Vitória da Conquista - BA, 45027-560'],
+['Unidade Valinhos', -22.9623421, -46.9786923, 'Rua Lino Buzatto, 855, Jardim Pinheiros, Valinhos - SP, 13274-440'],
+['Unidade nutriton', -5.8005449, -35.203111, 'Rua Joaquim Fagundes, 688, Barro vermelho, Natal - RN, 59022-500'],
+        ];
+
+var image = 'img/marcador.png';
+
+        function initMap() {
+
+            var myOptions = {
+              center: new google.maps.LatLng(-20.297161, -40.297718),
+              zoom: 4,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+
+            };
+
+            var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+            setMarkers(map,locations);
+
+        }
+
+function setMarkers(map,locations){
+
+            var marker, i
+
+            for (i = 0; i < locations.length; i++) {  
+
+                var loan = locations[i][0]
+                var lat = locations[i][1]
+                var long = locations[i][2]
+                var add =  locations[i][3]
+
+                latlngset = new google.maps.LatLng(lat, long);
+
+                var marker = new google.maps.Marker({  
+                    map: map,
+                    title: loan,
+                    position: latlngset,
+                    icon: image
+                });
+
+                var circulo = new google.maps.Circle(
+                {
+                  map: map,
+                  center: new google.maps.LatLng(lat, long),
+                  radius: 2000, // 1000 metros = 1k.
+                  strokeColor: "#818c99",
+                  fillColor: "#ffffff",
+                  fillOpacity: 0.70
+                });
+
+                map.setCenter(marker.getPosition())
+
+                var content = "<h5>" + loan + '</h5>' + "<strong>Endereço:</strong> " + add;
+
+                var infowindow = new google.maps.InfoWindow()
+
+                google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){ 
+                    return function() {
+                        infowindow.setContent(content);
+                        infowindow.open(map,marker);
+                    };
+                })(marker,content,infowindow));
+
+            }
+
+        }
+
+        $(document).ready(function(){
+            $('body').attr('onload', 'initMap();');
+        });
+</script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABVZRiogXuIJUxQl2l4s_cXrZ2sTSlUAI&callback=initMap">
+    </script>
+  </body>
+</html>
